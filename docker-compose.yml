@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:8.0.31
+    expose:
+      - 3306
+    ports:
+      - 13306:3306
+    volumes:
+      - ./visits.sql:/docker-entrypoint-initdb.d/visits.sql
+    env_file:
+      - .env
+  php:
+    build: .
+    ports:
+      - 8080:8080
+    volumes:
+      - .:/var/html
+    command: sh -c 'cd /var/html/www && php -S 0.0.0.0:8080'
+    depends_on:
+      - db
